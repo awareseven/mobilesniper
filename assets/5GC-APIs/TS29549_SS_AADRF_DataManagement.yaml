@@ -1,0 +1,412 @@
+openapi: 3.0.0
+
+info:
+  title: SS_AADRF_DataManagement
+  description: |
+    API for A-ADRF Data Management Service.  
+    © 2024, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  
+    All rights reserved.
+  version: "1.0.0-alpha.1"
+
+externalDocs:
+  description: >
+    3GPP TS 29.549 V18.5.0 Service Enabler Architecture Layer for Verticals (SEAL);
+    Application Programming Interface (API) specification; Stage 3.
+  url: https://www.3gpp.org/ftp/Specs/archive/29_series/29.549/
+
+security:
+  - {}
+  - oAuth2ClientCredentials: []
+
+servers:
+  - url: '{apiRoot}/ss-aadrf-datamanagement/v1'
+    variables:
+      apiRoot:
+        default: https://example.com
+        description: apiRoot as defined in clause 6.5 of 3GPP TS 29.549
+
+paths:
+  /subscriptions:
+    post:
+      summary: Create Individual A-ADRF Data Management Subscription.
+      operationId: CreateAADRFEventSubscription
+      tags:
+        - A-ADRF Data Management Subscriptions (Collection)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataManageSub'
+      responses:
+        '201':
+          description: >
+            The requested Individual A-ADRF Data Management Subscription is successfully created and
+            a representation of the created resource is returned in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataManageSub'
+          headers:
+            Location:
+              description: Contains the URI of the newly created resource.
+              required: true
+              schema:
+                type: string
+        '400':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/400'
+        '401':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/401'
+        '403':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/403'
+        '404':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/404'
+        '411':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/411'
+        '413':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/413'
+        '415':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/415'
+        '429':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/429'
+        '500':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/500'
+        '503':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/503'
+        default:
+          $ref: 'TS29122_CommonData.yaml#/components/responses/default'
+      callbacks:
+        myNotification:
+          '{$request.body#/notifUri}': 
+            post:
+              summary: Notify on the requested data.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/DataManageNotification'
+              responses:
+                '204':
+                  description: The notification is successfully received.
+                '307':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+                '308':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/308'
+                '400':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/400'
+                '401':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/401'
+                '403':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/403'
+                '404':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/404'
+                '411':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/411'
+                '413':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/413'
+                '415':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/415'
+                '429':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/429'
+                '500':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/500'
+                '503':
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/503'
+                default:
+                  $ref: 'TS29122_CommonData.yaml#/components/responses/default'
+
+  /subscriptions/{subscriptionId}:
+    parameters:
+      - name: subscriptionId
+        in: path
+        description: >
+          Represents the Individual A-ADRF Data Management Subscription resource.
+        required: true
+        schema:
+          type: string
+
+    delete:
+      summary: Remove the Individual A-ADRF Data Management Subscription.
+      operationId: UnsubscribeAADRFEventSubscription
+      tags:
+        - Individual A-ADRF Data Management Subscription (Document).
+      responses:
+        '204':
+          description: >
+            The individual A-ADRF Data Management Subscription resource matching the subscriptionId
+            is deleted.
+        '307':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/307'
+        '308':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/308'
+        '400':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/400'
+        '401':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/401'
+        '403':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/403'
+        '404':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/404'
+        '429':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/429'
+        '500':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/500'
+        '503':
+          $ref: 'TS29122_CommonData.yaml#/components/responses/503'
+        default:
+          $ref: 'TS29122_CommonData.yaml#/components/responses/default'
+
+components:
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: '{tokenUrl}'
+          scopes: {}
+
+  schemas:
+    DataManageSub:
+      description: Represents the event subscriptions.
+      type: object
+      properties:
+        eventSubscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSubscription'
+          minItems: 1
+          description: Subscribed events.
+        notifUri:
+          $ref: 'TS29122_CommonData.yaml#/components/schemas/Uri'
+        notifCorrId:
+          type: string
+          description: Notification correlation identifier.
+        supportedFeatures:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/SupportedFeatures'
+      required:
+        - eventSubscriptions
+        - notifUri
+
+    EventSubscription:
+      description: Represents the event subscription.
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/AadrfEvent'
+        dataCollectReq:
+          type: string
+        dataProducerIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: The list of Data Producer IDs.
+        valUes:
+          type: array
+          items:
+            $ref: 'TS29549_SS_UserProfileRetrieval.yaml#/components/schemas/ValTargetUe'
+          minItems: 1
+          description: The target VAL UE(s) identifiers.
+        valServerId:
+          type: string
+          description: The target VAL server ID.
+        valServiceId:
+          type: string
+          description: The VAL service ID.
+        profileCriteria:
+          type: string
+        validConds:
+          $ref: 'TS29549_SS_Events.yaml#/components/schemas/ValidityConditions'
+        snssais:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Snssai'
+          minItems: 1
+          description: Identification(s) of network slice(s) to which the subscription applies.
+        edgeReq:
+          $ref: '#/components/schemas/EdgeReq'
+        apiLogReq:
+          $ref: '#/components/schemas/ApiLogReq'
+      required:
+        - event
+
+    EdgeReq:
+      description: Represents the EDGE data request requirement.
+      type: object
+      properties:
+        dnais:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Dnai'
+          minItems: 1
+          description: Identifiers the DN Access Identifier.
+        dnns:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Dnn'
+          minItems: 1
+          description: Identifiers the DN Access Identifier.
+        destEasId:
+          type: string
+          description: Identifier for the destination EAS.
+        destEesId:
+          type: string
+          description: Identifier for the destination EES.
+      anyOf:
+        - required: [dnais]
+        - required: [dnns]
+        - required: [destEasId]
+        - required: [destEesId]
+
+    ApiLogReq:
+      description: Represents the API log request requirement.
+      type: object
+      properties:
+        apiRequestorInfo:
+          type: string
+        apiId:
+          type: string
+          description: String identifying the API invoked.
+        apiName:
+          type: string
+          description: Name of the API which was invoked.
+        apiVersion:
+          type: string
+          description: Version of the API which was invoked.
+        inputParameters:
+          type: array
+          items: {}
+          minItems: 1
+          description: List of input parameters.
+        result:
+          type: string
+          description: For HTTP protocol, it contains HTTP status code of the invocation.
+        apiInvokerId:
+          type: string
+          description: Identity of the API invoker which invoked the service API.
+        exposureLvl:
+          $ref: '#/components/schemas/ExposureLevel'
+        apiAggreInfo:
+          type: string
+      required:
+        - apiRequestorInfo
+
+    DataManageNotification:
+      description: Represents the notification to the consumer.
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/AadrfEvent'
+        notifCorrId:
+          type: string
+          description: Notification correlation identifier.
+        valServerId:
+          type: string
+          description: The target VAL server ID.
+        valServiceId:
+          type: string
+          description: The VAL service ID.
+        valUeIds:
+          type: array
+          items:
+            $ref: 'TS29549_SS_UserProfileRetrieval.yaml#/components/schemas/ValTargetUe'
+          minItems: 1
+          description: The target VAL UE(s) identifiers.
+        locAccuracy:
+          type: string
+        validConds:
+          $ref: 'TS29549_SS_Events.yaml#/components/schemas/ValidityConditions'
+        apiLog:
+          $ref: '#/components/schemas/ApiLogInfo'
+        rttDeviation:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Float'
+        snssais:
+          type: array
+          items:
+            $ref: 'TS29571_CommonData.yaml#/components/schemas/Snssai'
+          minItems: 1
+          description: Identification(s) of network slice(s) to which the subscription applies.
+        edgeInfo:
+          $ref: '#/components/schemas/EdgeInfo'
+      required:
+        - event
+
+    ApiLogInfo:
+      description: Represents the API log data.
+      type: object
+      properties:
+        apiId:
+          type: string
+          description: String identifying the API invoked.
+        apiName:
+          type: string
+          description: Name of the API which was invoked.
+        failNum:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uinteger'
+        apiAvailableInd:
+          type: boolean
+          description: Indicates the API availability.
+        apiVerChgNum:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uinteger'
+        apiLocChg:
+          type: boolean
+          description: Indicates the API location changes for the target API.
+        apiThrottlingEvents:
+          type: string
+        invokeNum:
+          $ref: 'TS29571_CommonData.yaml#/components/schemas/Uinteger'
+        apiVersion:
+          type: string
+          description: Version of the API which was invoked.
+      required:
+        - apiId
+
+    EdgeInfo:
+      description: Represents the EDGE related data.
+      type: object
+      properties:
+        edgeReq:
+          $ref: '#/components/schemas/EdgeReq'
+        output:
+          type: string
+
+
+# Simple data types and Enumerations
+    AadrfEvent:
+      anyOf:
+      - type: string
+        enum:
+           - HISTORICAL_SERVICEAPI
+           - NETWORK_SLICE
+           - EDGE_DATA
+           - LOCATION_ACCURACY
+      - type: string
+        description: >
+          This string provides forward-compatibility with future extensions to the enumeration and
+          is not used to encode content defined in the present version of this API.
+      description: |
+        Indicates the subscribed events.  
+        Possible values are:
+        - HISTORICAL_SERVICEAPI: The event for historical service API logs.
+        - NETWORK_SLICE: The event for the network slice data.
+        - EDGE_DATA: The event for the EDGE related data.
+        - LOCATION_ACCURACY: The event for the location accuracy data.
+
+    ExposureLevel:
+      anyOf:
+      - type: string
+        enum:
+           - READ
+           - WRITE
+           - DELETE
+      - type: string
+        description: >
+          This string provides forward-compatibility with future extensions to the enumeration and
+          is not used to encode content defined in the present version of this API.
+      description: |
+        Indicates the exposure level.  
+        Possible values are:
+        - READ: The exposure level for the logs to be exposed is read.
+        - WRITE: The exposure level for the logs to be exposed is write.
+        - DELETE: The exposure level for the logs to be exposed is delete.
