@@ -30,6 +30,6 @@ This project is licensed under [MIT](./LICENSE).
 
 ## Sponsors
 
-The project was funded by the German Federal Office for Information Security and developed by AWARE7 GmbH.
+The project was developed by AWARE7 GmbH.
 
 ![](./docs/img/AWARE7.png)
