@@ -9,7 +9,7 @@ While 5G technology is driving advances in areas such as IoT, autonomous systems
 
 By combining academic research and practical tools, the project provides a valuable resource to ensure the security and resilience of 5G infrastructures to growing threats. 
 
-[The guide](https://github.com/lord-r3/pentest5gsec) is open source and can be further developed and used. We are happy to accept changes and additions via pull request. [The guide](https://github.com/awareseven/5G-PentestGuide) is available as a Gitbook.
+[The guide](https://github.com/awareseven/5g-threats) is open source and can be further developed and used. We are happy to accept changes and additions via pull request. [The guide](https://github.com/awareseven/5G-PentestGuide) is available as a Gitbook.
 
 The identified threats can be integrated into MITRE ATT&CK Workbench via the following [repository](https://github.com/awareseven/5g-threats)
 

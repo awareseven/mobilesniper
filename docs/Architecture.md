@@ -10,14 +10,26 @@ graph TD
     A --> B2[analyze]
     A --> B3[scan]
     
-    B1 --> C1[services] --> X1{mmap}
+    B1 --> C3[sdc]
+    C3 --> C4[provider]
+    C3 --> C5[consumer]
+
+    X3{mTLS Certificates} --> C4
+    X3 --> C5
+
+    B1 --> C1[services]
     B1 --> C2[nf]
+    
+    X1{mmap} --> C1
 
     X5{5G-Core OpenAPI} --> C2
     X5 --> D1
     
     B2 --> D1[pcap]
     
-    B3 --> E1[nuclei] --> X2{nuclei}
-    B3 --> E2[nessus] --> X4{nessus}
+    B3 --> E1[nuclei]
+    X2{nuclei} --> E1
+
+    B3 --> E2[nessus]
+    X4{nessus} --> E2
 ```
