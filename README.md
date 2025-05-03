@@ -17,6 +17,9 @@ The identified threats can be integrated into MITRE ATT&CK Workbench via the fol
 ![](./docs/img/mobilesniper.gif)
 ---
 
+## Disclaimer
+This tool is provided for educational and research purpose only. The authors of this project are in no way responsible for any misuse of this tool. We use it to test under NDA agreements with clients and their consents for pentesting purposes and we never encourage to misuse or take responsibility for any damage caused !
+
 ## Requirements
 
 These tools must be installed before succesfully running all MobileSniper commands:
